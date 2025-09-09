@@ -1,0 +1,20 @@
+// 这是TypeScript代码编译成JavaScript代码的配置文件,因为插件使用TS编写,需要先将TS编译成JS代码
+// VsCode内置了JavaScript编译器,在插件加载时会将JavaScript代码即时编译成机器指令
+{
+    "compilerOptions": {
+        "module": "commonjs", // 引用第三方库时的书写格式
+        "target": "es2020", // 编译后的JS语言版本
+        "outDir": "out", // 编译后的JS代码输出目录
+        "lib": [ // 编译时需要引用的库文件
+            "es2020"
+        ],
+        "sourceMap": true, // 生成调试文件 例:显示JS代码的某某行对应的TS代码的某某行
+        "rootDir": "src", // TS源代码目录
+        "strict": true // 启用所有严格类型检查选项
+    },
+    // 指定需要排除的文件和目录(不进行编译)
+    "exclude": [
+        "node_modules", // 第三方依赖目录
+        ".vscode-test" // VS Code测试相关文件
+    ]
+}

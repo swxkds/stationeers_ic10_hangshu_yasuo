@@ -1,0 +1,68 @@
+#试剂与对应的物品
+#试剂=> HASH("Steel") 钢
+#试剂物品=> HASH("ItemEmptyCan") 空罐 储量X-1
+
+#试剂=> HASH("Flour") 面粉
+#试剂物品=> HASH("ItemFlour") 面粉 储量X-1
+
+#试剂=> HASH("Milk") 牛奶
+#试剂物品=> HASH("ItemMilk") 牛奶 储量X-1
+
+#试剂=> HASH("Egg") 蛋
+#试剂物品=> HASH("ItemEgg") 鸡蛋 储量X-1
+#试剂物品=> HASH("ItemFertilizedEgg") 受精卵 储量X-1
+
+#试剂=> HASH("Oil") 大豆油
+#试剂物品=> HASH("ItemSoyOil")  油 储量X-1
+
+#试剂=> HASH("Potato") 土豆
+#试剂物品=> HASH("ItemPotato") 土豆 储量X-1
+
+#试剂=> HASH("Tomato") 番茄
+#试剂物品=> HASH("ItemTomato") 番茄 储量X-1
+
+#试剂=> HASH("Pumpkin") 南瓜
+#试剂物品=> HASH("ItemPumpkin") 南瓜 储量X-1
+
+#试剂=> HASH("Rice") 水稻
+#试剂物品=> HASH("ItemRice") 水稻 储量X-1
+
+#试剂=> HASH("Corn") 玉米
+#试剂物品=> HASH("ItemCorn") 玉米 储量X-1
+
+#试剂=> HASH("Wheat") 小麦
+#试剂物品=> HASH("ItemWheat") 小麦 储量X-1
+
+#试剂=> HASH("Soy") 大豆
+#试剂物品=> HASH("ItemSoybean") 大豆 储量X-1
+
+#试剂=> HASH("Mushroom") 蘑菇
+#试剂物品=> HASH("ItemMushroom") 蘑菇 储量X-1
+
+#试剂=> HASH("Sugar") 糖
+#试剂物品=> HASH("ItemSugar") 糖 储量X-1
+#试剂物品=> HASH("ItemSugarCane") 甘蔗 储量X-1
+
+#试剂=> HASH("Cocoa") 可可
+#试剂物品=> HASH("ItemCocoaPowder") 可可粉 储量X-1
+#试剂物品=> HASH("ItemCocoaTree") 可可豆 储量X-1
+
+#配方与对应的试剂
+#配方=> HASH("ItemPumpkinPie") 南瓜派 成分=> 面粉X100 牛奶X10 蛋X1 南瓜X10
+#配方=> HASH("ItemBreadLoaf") 面包 成分=> 面粉X200 大豆油X5
+#配方=> HASH("ItemChocolateCake") 巧克力蛋糕 成分=> 面粉X50 牛奶X5 蛋X1 糖X50 可可X2
+#配方=> HASH("ItemPlainCake") 蛋糕 成分=> 面粉X50 牛奶X5 蛋X1 糖X50
+#配方=> HASH("ItemMuffin") 松饼 成分=> 面粉X50 牛奶X10 蛋X1
+#配方=> HASH("ItemCookedPowderedEggs") 鸡蛋粉 成分=> 蛋X4
+#配方=> HASH("ItemCookedCondensedMilk") 炼乳 成分=> 牛奶X100
+#配方=> HASH("ItemChocolateBar") 巧克力棒 成分=> 糖X10 可可X2
+#配方=> HASH("ItemCookedPumpkin") 熟南瓜 成分=> 南瓜X1
+#配方=> HASH("ItemPotatoBaked") 熟土豆 成分=> 土豆X1
+#配方=> HASH("ItemCookedSoybean") 熟大豆 成分=> 大豆X1
+#配方=> HASH("ItemCookedCorn") 熟玉米 成分=> 玉米X1
+#配方=> HASH("ItemCookedTomato") 熟番茄 成分=> 番茄X1
+#配方=> HASH("ItemCookedRice") 熟米饭 成分=> 水稻X1
+#配方=> HASH("ItemCookedMushroom") 熟蘑菇 成分=> 蘑菇X1
+#配方=> HASH("ItemFries") 炸薯条 成分=> 大豆油X5 土豆X1
+#配方=> HASH("ItemChocolateCerealBar") 巧克力谷物棒 成分=> 面粉X50 可可X1
+#配方=> HASH("ItemCerealBar") 谷物棒 成分=> 面粉X50

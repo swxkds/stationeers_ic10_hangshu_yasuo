@@ -1,0 +1,93 @@
+#使用双循环控制分拣机，一级循环切换设备，二级循环切换分拣名单
+#使用场景举例：低温过滤系统，液体和气体相变成冰从被动通风口掉出或者房间内生成，凝华和凝固的冰虽然名字一样，但是哈希是两种
+#出口模式=0时,符合条件的走1号口出来;=1时,不符合条件的走1号口出来
+#名单模式反转操作的方法是异或门,分拣机入口物品哈希=分拣名单,输出1。1 xor 0,0 xor 0,结果不变,1 xor 1 , 0 xor 1,结果反转
+#分拣名单配置,每个分拣机都至少需要一个push 0用于结束循环的条件
+
+alias 分拣机 d0
+
+alias 可变设备 r0
+alias 分拣物 r1
+
+分拣机配置:
+sb HASH("StructureSorter") Mode 2      #IC控制模式,物品进入分拣机会卡在入口，直到给了分拣指令
+sb HASH("StructureSorter") On 1
+define 分拣物数 2                       #单台分拣机分拣几种物品
+define 出口模式 1
+
+分拣名单配置:
+jal 堆栈内存清洗
+零号机:
+push 0                                          #用于判断遍历结束的终止符
+push HASH("ItemPureIceCarbonDioxide")          #凝华变的固态二氧化碳
+push HASH("ItemPureIceLiquidCarbonDioxide")    #凝固变的固态二氧化碳
+一号机:
+push 0                                         #我们的数据长度是3的倍数，因此哪怕就一个分拣物，也要在上面用一个0来填充，参考现实编程的内存对齐
+push 0 
+push HASH("ItemPureIceLiquidCarbonDioxide") 
+二号机:
+三号机:
+四号机:
+五号机:
+
+start:
+yield
+jal 遍历获取设备
+jal 给设备取别名
+jal 内存对齐堆栈
+jal 设备状态反馈
+jal 分拣逻辑处理
+jal 控制分拣设备
+j start
+
+遍历获取设备:
+add r0 r0 1
+mod r0 r0 6                 #6mod6,余数为0,满6归0
+bdns dr0 遍历获取设备        #尝试获取物理接口上是否存在设备
+l r9 dr0 PrefabHash
+bne r9 HASH("StructureSorter") 遍历获取设备
+j ra
+
+给设备取别名:
+alias 分拣机 dr0            #取别名并不是给dr0取，而是假如r0=0,dr0=d1,是给d1取的别名,r0变了后，这个别名也要重新定义下
+j ra
+
+内存对齐堆栈:
+add sp r0 1
+add r9 分拣物数 1           #push 0 占一条
+mul sp sp r9
+j ra
+
+设备状态反馈:
+ls r15 分拣机 0 OccupantHash
+j ra
+
+分拣逻辑处理:
+beqz r15 ra         #投料口没有物品，r15=0,直接控制设备打开0号分拣口
+move r3 ra          #下面jal类似递归调用,会覆写ra上级调用者的下一行号
+循环调用:            #然后又因为用了pop，会打乱指针,所以用一个寄存器来保存上级的下一行号
+jal 遍历分拣名单
+beqz 分拣物 循环结束    #分拣物=0，分拣名单遍历完,结束循环
+seq r14 r15 分拣物
+beqz r14 循环调用       #投料口的哈希只要和名单中任意一个相同,结束循环
+循环结束:
+move ra r3
+j ra
+
+遍历分拣名单:
+pop 分拣物          #单独拉出来方便看
+j ra
+
+控制分拣设备:
+beqz r15 ra
+xor r14 r14 出口模式    #用异或门反转分拣出口
+s 分拣机 Output r14     #分拣机执行一次分拣后逻辑自动复位变成-1,-1在编程中代表null,即不分拣的意思
+j ra
+
+堆栈内存清洗:
+move sp 0
+push 0
+brle sp 511 -1
+move sp 0
+j ra
+

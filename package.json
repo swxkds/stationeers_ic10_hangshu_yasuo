@@ -1,0 +1,69 @@
+{
+  "icon": "icon.png",
+  "name": "stationeers-ic10-hangshu-yasuo",
+  "displayName": "安然的补丁包-Stationeers(空间站工程师)IC10行数压缩",
+  "publisher": "swxkds",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swxkds/stationeers_ic10_hangshu_yasuo.git"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.processSelection.a",
+        "title": "单击此控件执行IC10代码压缩"
+      },
+      {
+        "command": "extension.processSelection.b",
+        "title": "单击此控件生成IC10入栈指令"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.processSelection.a",
+          "when": "editorHasSelection && editorLangId == 'ic10'",
+          "group": "navigation"
+        },
+        {
+          "command": "extension.processSelection.b",
+          "when": "editorHasSelection",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onCommand:extension.processSelection.a",
+    "onCommand:extension.processSelection.b"
+  ],
+  "files": [
+    "out/**",
+    "package.json",
+    "icon.png",
+    "node_modules/**"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.60.0",
+    "@types/xml2js": "^0.4.14"
+  },
+  "dependencies": {
+    "xml2js": "^0.6.2"
+  }
+}
