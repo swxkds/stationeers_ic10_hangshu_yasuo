@@ -475,7 +475,7 @@ function 行数压缩(input: string): string {
 
   for (const 词条Key of 降序词条Key表) {
     const 词条 = 词条表.get(词条Key);
-    const 正则 = new RegExp(`${字面量处理(词条Key)}`, 'g');
+    const 正则 = new RegExp(`(?<![\\u4e00-\\u9fa5A-Za-z0-9_])${字面量处理(词条Key)}(?![\\u4e00-\\u9fa5A-Za-z0-9_])`, 'g');
     代码文本 = 代码文本.replace(正则, `${词条}`); // 全字匹配替换
     // Log.appendLine(`打印词条表 [${正则}, ${词条}]`);
   }
@@ -512,9 +512,10 @@ function 行数压缩(input: string): string {
 
   代码文本 = 代码文本.replace(pushHashRegex, (match, inner) => {
     try {
-      // Log.appendLine(`捕获整: ${match}`);
-      // Log.appendLine(`捕获: ${inner}`);
-      return `${crc32Signed(inner)}`;
+      Log.appendLine(`捕获: ${inner}`);
+      const __ = `${crc32Signed(inner)}`;
+      Log.appendLine(`将 <${match}> 替换为 <${__}>\n`);
+      return __;
     }
     catch (err) {
       // 出错时保留原样并把错误写到输出面板（如果可用）
