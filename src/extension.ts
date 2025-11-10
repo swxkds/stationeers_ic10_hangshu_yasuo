@@ -45,29 +45,13 @@ function 生成IC10映射表入栈指令(input: string): string {
   const 物品哈希映射物品详情 = new Map<number, [number, string]>();
   const 全部源物品哈希表 = new Set<number>();
 
-  const 原始代码 = input.split(/\r?\n/).filter((line) => {
-    var __ = line.trim();
-    if (__ == "" || __.startsWith('#')) {
-      return false;
-    }
-    return true;
-  });
-
+  const 原始代码 = input.split(/\r?\n/);
 
   let 当前源;
-  for (let i = 0; i < 原始代码.length; i++) {
-    // 清空前导和后导空格
-    let 注释截取 = 原始代码[i].indexOf('#');
+  for (let rawLine of 原始代码) {
 
-    if (注释截取 >= 0) {
-      原始代码[i] = 原始代码[i].substring(0, 注释截取).trim();
-    }
-    else {
-      原始代码[i] = 原始代码[i].trim();
-    }
-
-    if (!原始代码[i]) { continue; }
-    const line = 原始代码[i];
+    const line = rawLine.trim();
+    if (!line) { continue; }
 
     const 源物品 = line.match(源特征);
     if (源物品) {
@@ -77,6 +61,7 @@ function 生成IC10映射表入栈指令(input: string): string {
       简名映射哈希.set(简名, 哈希);
       物品哈希映射物品详情.set(哈希, [哈希, 简名]);
       全部源物品哈希表.add(哈希);
+      当前源 = 简名;
       continue;
     }
 
