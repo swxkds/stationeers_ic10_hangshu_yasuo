@@ -1,0 +1,6 @@
+#源物品映射到目标物品
+#源物品=> HASH("Steel") 钢
+#目标物品=> HASH("ItemEmptyCan") 空罐
+
+#源物品=> HASH("aaa") 土豆
+#目标物品=> HASH("bbb") 土豆种子

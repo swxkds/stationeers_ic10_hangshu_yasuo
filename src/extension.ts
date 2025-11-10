@@ -20,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.commands.registerCommand("extension.processSelection.a", 事件一));
   context.subscriptions.push(vscode.commands.registerCommand("extension.processSelection.b", 事件二));
+  context.subscriptions.push(vscode.commands.registerCommand("extension.processSelection.c", 事件三));
 }
 
 function 事件一() {
@@ -29,6 +30,106 @@ function 事件一() {
 function 事件二() {
   将剪切板内容处理后复制到新编辑器(生成配方入栈指令);
 }
+
+function 事件三() {
+  将剪切板内容处理后复制到新编辑器(生成IC10映射表入栈指令);
+}
+
+function 生成IC10映射表入栈指令(input: string): string {
+
+  const 源特征 = /^#源物品=>\s+(\S+)\s+(\S+)/;
+  const 目标特征 = /^#目标物品=>\s+(\S+)\s+(\S+)/;
+
+  const 简名映射哈希 = new Map<string, number>();
+  const 源物品映射目标物品 = new Map<string, string[]>();
+  const 物品哈希映射物品详情 = new Map<number, [number, string]>();
+  const 全部源物品哈希表 = new Set<number>();
+
+  const 原始代码 = input.split(/\r?\n/).filter((line) => {
+    var __ = line.trim();
+    if (__ == "" || __.startsWith('#')) {
+      return false;
+    }
+    return true;
+  });
+
+
+  let 当前源;
+  for (let i = 0; i < 原始代码.length; i++) {
+    // 清空前导和后导空格
+    let 注释截取 = 原始代码[i].indexOf('#');
+
+    if (注释截取 >= 0) {
+      原始代码[i] = 原始代码[i].substring(0, 注释截取).trim();
+    }
+    else {
+      原始代码[i] = 原始代码[i].trim();
+    }
+
+    if (!原始代码[i]) { continue; }
+    const line = 原始代码[i];
+
+    const 源物品 = line.match(源特征);
+    if (源物品) {
+      const 名称 = 源物品[1]; // 支持 HASH("Name") 或 Name 或 整数哈希 这三种, 最终都返回整数哈希
+      const 简名 = 源物品[2];
+      const 哈希 = 转换整数哈希(名称);
+      简名映射哈希.set(简名, 哈希);
+      物品哈希映射物品详情.set(哈希, [哈希, 简名]);
+      全部源物品哈希表.add(哈希);
+      continue;
+    }
+
+    const 目标物品 = line.match(目标特征);
+    if (目标物品) {
+      const 名称 = 目标物品[1]; // 支持 HASH("Name") 或 Name 或 整数哈希 这三种, 最终都返回整数哈希
+      const 简名 = 目标物品[2];
+      const 哈希 = 转换整数哈希(名称);
+      简名映射哈希.set(简名, 哈希);
+      物品哈希映射物品详情.set(哈希, [哈希, 简名]);
+
+      if (当前源) {
+        const __ = 源物品映射目标物品.get(当前源) || [];  // 左边为空时,使用右边值(创建一个空数组)
+        __.push(简名);
+        源物品映射目标物品.set(当前源, __);
+      }
+    }
+    continue;
+  }
+
+  const 初始数组长度 = 0;
+  const 最大数组长度 = 500; // 安全上限，避免无限循环
+
+  // 将源物品哈希映射到堆栈下标, 以该下标为指针, 指向目标物品哈希
+  const 源物品指针数组 = 将试剂物品哈希映射到试剂物品统计槽堆栈指针(Array.from(全部源物品哈希表), {
+    初始容量: 初始数组长度, 最大容量: 最大数组长度, 元素大小: 1
+  });
+
+  if (!源物品指针数组) { return "ERROR: 无法为物品生成唯一快查索引（可能物品数量过多或哈希冲突无法解决）"; }
+
+  // --- 开始生成指令列表
+  const 指令序列: string[] = [];
+
+  指令序列.push(`#通过插槽的物品,读取其哈希,通过<(Math.abs(物品哈希) % <源物品指针数组>长度) + 1>运算后得到源物品指针`);
+  指令序列.push(`#再用get[指针]获取目标物品哈希`);
+  指令序列.push("");
+
+  指令序列.push(`clr db`);
+
+  for (const [哈希, { 指针地址: 指针, 统计槽表基址偏移: 偏移 }] of 源物品指针数组.统计槽表.entries()) {
+    const 源物品详情 = 物品哈希映射物品详情.get(哈希);
+    const 源简名 = 源物品详情?.[1];
+    const 目标简名 = 源物品映射目标物品.get(`${源简名}`);
+    指令序列.push(`#源物品: [${源简名} , ${简名映射哈希.get(`${源简名}`)}] , 目标物品: [${目标简名} , ${简名映射哈希.get(`${目标简名}`)}]`);
+    指令序列.push(`poke ${指针 - 1} ${简名映射哈希.get(`${目标简名}`)}`);
+  }
+
+  指令序列.push("");
+  指令序列.push(`#写入完毕`);
+
+  return 指令序列.join("\n");
+}
+
 
 const PUSH_HASH_REGEX = /[Hh][Aa][Ss][Hh]\("([^"]+)"\)/;
 function 生成配方入栈指令(input: string): string {

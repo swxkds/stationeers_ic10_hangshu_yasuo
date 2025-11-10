@@ -3,7 +3,7 @@
   "name": "stationeers-ic10-hangshu-yasuo",
   "displayName": "安然的补丁包-Stationeers(空间站工程师)IC10行数压缩",
   "publisher": "swxkds",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/swxkds/stationeers_ic10_hangshu_yasuo.git"
@@ -24,6 +24,10 @@
       {
         "command": "extension.processSelection.b",
         "title": "单击此控件生成IC10入栈指令"
+      },
+            {
+        "command": "extension.processSelection.c",
+        "title": "单击此控件生成IC10映射表入栈指令"
       }
     ],
     "menus": {
@@ -37,13 +41,19 @@
           "command": "extension.processSelection.b",
           "when": "editorHasSelection",
           "group": "navigation"
+        },
+        {
+          "command": "extension.processSelection.c",
+          "when": "editorHasSelection",
+          "group": "navigation"
         }
       ]
     }
   },
   "activationEvents": [
     "onCommand:extension.processSelection.a",
-    "onCommand:extension.processSelection.b"
+    "onCommand:extension.processSelection.b",
+    "onCommand:extension.processSelection.c"
   ],
   "files": [
     "out/**",
