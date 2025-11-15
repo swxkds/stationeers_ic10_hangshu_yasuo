@@ -223,16 +223,15 @@ function 生成配方入栈指令(input: string): string {
 
   // 计算内存布局
   let 最多试剂数 = 0;
-  let 最多物品数 = 0;
   const 配方表Arr = Array.from(配方详情);
   for (const __ of 配方表Arr) {
     const 成分表 = __[1][2];
     最多试剂数 = Math.max(最多试剂数, 成分表.length);
-    for (const 成分 of 成分表) {
-      const 试剂哈希 = parseInt(成分[0], 10);
-      const 物品哈希表 = Array.isArray(试剂哈希映射物品哈希.get(试剂哈希)) ? 试剂哈希映射物品哈希.get(试剂哈希)! : [];
-      最多物品数 = Math.max(最多物品数, 物品哈希表.length);
-    }
+  }
+  
+  let 最多物品数 = 0;
+  for (const 物品哈希表 of 试剂哈希映射物品哈希.values()) {
+    最多物品数 = Math.max(最多物品数, 物品哈希表.length);
   }
 
   const 物品指针表起始 = 1;
